@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RestController
 public class simpleController {
@@ -93,6 +96,10 @@ public class simpleController {
         return ResponseEntity.notFound().build();
 
     }
+
+
+
+
     @DeleteMapping("/user/{id}")
     public ResponseEntity<Void> deleteId(@PathVariable Long id)
     {
@@ -102,6 +109,35 @@ public class simpleController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+
+
+
+    @GetMapping("/user/page")
+    public ResponseEntity<Page<users>> getUsers(Pageable pageable)
+    {
+        return ResponseEntity.ok(userService.getUsers(pageable));
+    }
+
+
+
+
+
+
+    @GetMapping("/user/search")
+    public ResponseEntity<Page<userResponseDTO>> searchUser(@RequestParam String username,Pageable pageable)
+    {
+        Page<userResponseDTO> result = userService.searchUser(pageable,username);
+
+        return ResponseEntity.ok(result);
+
+
+
+
+
+
+
     }
 
 }
