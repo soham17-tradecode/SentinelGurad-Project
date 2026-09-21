@@ -63,20 +63,16 @@ public class simpleController {
     {
 
         userResponseDTO userResponseDTO = new userResponseDTO();
-        Optional<users> users = userService.findByid(id);
+        users users = userService.findByid(id);
 
 
-        if (users.isEmpty())
-        {
-            return ResponseEntity.noContent().build();
-        }
-        users existingUser = users.get();
-        userResponseDTO.setId(existingUser.getId());
-        userResponseDTO.setUsername(existingUser.getUsername());
-        userResponseDTO.setEmail(existingUser.getEmail());
-        userResponseDTO.setFullName(existingUser.getFullName());
-        userResponseDTO.setCreateAt(existingUser.getCreateAt());
-        userResponseDTO.setUpdateAt(existingUser.getUpdateAt());
+
+        userResponseDTO.setId(users.getId());
+        userResponseDTO.setUsername(users.getUsername());
+        userResponseDTO.setEmail(users.getEmail());
+        userResponseDTO.setFullName(users.getFullName());
+        userResponseDTO.setCreateAt(users.getCreateAt());
+        userResponseDTO.setUpdateAt(users.getUpdateAt());
 
 
         return ResponseEntity.ok(userResponseDTO);
@@ -88,12 +84,9 @@ public class simpleController {
     @PutMapping("/user/{id}")
     public ResponseEntity<users> update(@PathVariable Long id,@RequestBody users updateUser)
     {
-        Optional<users> update = userService.updateUsers(id,updateUser);
-        if(update.isPresent())
-        {
-            return ResponseEntity.ok(update.get());
-        }
-        return ResponseEntity.notFound().build();
+        users update = userService.updateUsers(id,updateUser);
+        return ResponseEntity.ok(update);
+
 
     }
 
