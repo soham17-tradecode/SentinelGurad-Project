@@ -31,4 +31,14 @@ public class globalExceptionHandlers {
         error.put("error", exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
+    //duplicate exception
+    @ExceptionHandler(duplicateUserException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicate(duplicateUserException exception)
+    {
+        Map<String,String> error = new HashMap<>();
+        error.put("error", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
 }

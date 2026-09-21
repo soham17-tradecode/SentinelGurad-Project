@@ -7,13 +7,19 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+
 
 import java.time.LocalDateTime;
-import java.util.Date;
+
 @Entity
 @Data
-@Table(name = "userTable")
+@Table(name = "userTable",
+        uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
+        }
+
+)
 @AllArgsConstructor
 @NoArgsConstructor
 

@@ -2,6 +2,7 @@ package com.sentinelguard.user_service.services;
 
 import com.sentinelguard.user_service.DTO.userDTO;
 import com.sentinelguard.user_service.DTO.userResponseDTO;
+import com.sentinelguard.user_service.exception.duplicateUserException;
 import com.sentinelguard.user_service.exception.userNotFoundException;
 import com.sentinelguard.user_service.model.users;
 import com.sentinelguard.user_service.repo.userRepo;
@@ -23,6 +24,15 @@ public class userService {
 
     public users setUser(users user) //saving the users
     {
+        if (userRepo.existsByUsername(user.getUsername()))
+        {
+            throw new duplicateUserException("Username already exists : "+user.getUsername());
+        }
+
+        if (userRepo.existsByEmail(user.getEmail()))
+        {
+            throw new duplicateUserException("Email already exists : "+user.getEmail());
+        }
         return userRepo.save(user);
     }
 
@@ -38,6 +48,21 @@ public class userService {
 
     public users updateUsers(Long id, userDTO updateUser) {
         users exists = findByid(id);
+        if (userRepo.existsByUsernameAndIdNot(
+                updateUser.getUsername(), id)) {
+
+            throw new duplicateUserException(
+                    "Username already exists: " + updateUser.getUsername()
+            );
+        }
+
+        if (userRepo.existsByEmailAndIdNot(
+                updateUser.getEmail(), id)) {
+
+            throw new duplicateUserException(
+                    "Email already exists: " + updateUser.getEmail()
+            );
+        }
 
 
 
