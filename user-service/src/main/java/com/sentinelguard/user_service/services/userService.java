@@ -1,5 +1,6 @@
 package com.sentinelguard.user_service.services;
 
+import com.sentinelguard.user_service.DTO.userDTO;
 import com.sentinelguard.user_service.DTO.userResponseDTO;
 import com.sentinelguard.user_service.exception.userNotFoundException;
 import com.sentinelguard.user_service.model.users;
@@ -35,12 +36,14 @@ public class userService {
         ));
     }
 
-    public users updateUsers(Long id, users updateUser) {
+    public users updateUsers(Long id, userDTO updateUser) {
         users exists = findByid(id);
+
 
 
         exists.setUsername(updateUser.getUsername());
         exists.setEmail(updateUser.getEmail());
+        exists.setFullName(updateUser.getFullName());
 
         return userRepo.save(exists);
 
