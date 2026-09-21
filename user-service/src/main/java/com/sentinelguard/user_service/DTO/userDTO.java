@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 public class userDTO {
-    @NotBlank
+    @NotBlank(message = "username cannot blank")
     private String username;
-    @NotBlank
-    @Email
+    @NotBlank(message = "email cannot be blank")
+    @Email(message = "provide a valid email")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Full name cannot blank")
     private String fullName;
 }
