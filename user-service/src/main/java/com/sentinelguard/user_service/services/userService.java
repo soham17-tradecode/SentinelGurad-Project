@@ -6,15 +6,15 @@ import com.sentinelguard.user_service.exception.duplicateUserException;
 import com.sentinelguard.user_service.exception.userNotFoundException;
 import com.sentinelguard.user_service.model.users;
 import com.sentinelguard.user_service.repo.userRepo;
-import lombok.Lombok;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class userService {
@@ -36,8 +36,20 @@ public class userService {
         return userRepo.save(user);
     }
 
-    public List<users> allUsers() {
-        return userRepo.findAll();
+    public List<userResponseDTO> allUsers() {
+        List<users> userList = userRepo.findAll();
+       return userList.stream().map(user -> {
+            userResponseDTO response = new userResponseDTO();
+            response.setId(user.getId());
+            response.setUsername(user.getUsername());
+            response.setEmail(user.getEmail());
+            response.setFullName(user.getFullName());
+            response.setCreateAt(user.getCreateAt());
+            response.setUpdateAt(user.getUpdateAt());
+
+            return response;
+
+        }).toList();
     }
 
     public users findByid(Long id) {
@@ -74,19 +86,34 @@ public class userService {
 
     }
 
-    public boolean deleteUser(Long id) {
+    public void deleteUser(Long id) {
         users exists = findByid(id);
 
-        userRepo.deleteById(exists.getId());
+        userRepo.delete(exists);
 
 
-        return true;
+
 
     }
 
     //paginated service
-    public Page<users> getUsers(Pageable pageable) {
-        return userRepo.findAll(pageable);
+    public Page<userResponseDTO> getUsers(Pageable pageable) {
+
+
+        Page<users> userPage =  userRepo.findAll(pageable);
+
+        return userPage.map(user ->{
+            userResponseDTO response = new userResponseDTO();
+            response.setId(user.getId());
+            response.setUsername(user.getUsername());
+            response.setEmail(user.getEmail());
+            response.setFullName(user.getFullName());
+            response.setCreateAt(user.getCreateAt());
+            response.setUpdateAt(user.getUpdateAt());
+
+            return response;
+
+        } );
     }
 
     public Page<userResponseDTO> searchUser(Pageable pageable, String username) {

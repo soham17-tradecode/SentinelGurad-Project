@@ -4,21 +4,20 @@ import com.sentinelguard.user_service.DTO.userDTO;
 import com.sentinelguard.user_service.DTO.userResponseDTO;
 import com.sentinelguard.user_service.model.users;
 import com.sentinelguard.user_service.services.userService;
-import jakarta.annotation.security.PermitAll;
+
 import jakarta.validation.Valid;
-import org.aspectj.apache.bcel.generic.RET;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
+
 
 @RestController
 public class simpleController {
@@ -50,12 +49,12 @@ public class simpleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<List<users>> getUsers() {
+    @GetMapping("/users")
+    public ResponseEntity<List<userResponseDTO>> getUsers() {
         return ResponseEntity.ok(userService.allUsers());
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<userResponseDTO> findbyId(@PathVariable Long id) {
 
         userResponseDTO userResponseDTO = new userResponseDTO();
@@ -75,7 +74,7 @@ public class simpleController {
 
     }
 
-    @PutMapping("/user/{id}")
+    @PutMapping("/users/{id}")
     public ResponseEntity<userResponseDTO> update(@PathVariable Long id, @Valid @RequestBody userDTO updateUser) {
         users update = userService.updateUsers(id, updateUser);
         userResponseDTO userDTO = new userResponseDTO();
@@ -94,23 +93,21 @@ public class simpleController {
     }
 
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteId(@PathVariable Long id) {
-        boolean ok = userService.deleteUser(id);
-        if (ok) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+         userService.deleteUser(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 
-    @GetMapping("/user/page")
-    public ResponseEntity<Page<users>> getUsers(Pageable pageable) {
+    @GetMapping("/users/page")
+    public ResponseEntity<Page<userResponseDTO>> getUsers(Pageable pageable) {
         return ResponseEntity.ok(userService.getUsers(pageable));
     }
 
 
-    @GetMapping("/user/search")
+    @GetMapping("/users/search")
     public ResponseEntity<Page<userResponseDTO>> searchUser(@RequestParam String username, Pageable pageable) {
         Page<userResponseDTO> result = userService.searchUser(pageable, username);
 
