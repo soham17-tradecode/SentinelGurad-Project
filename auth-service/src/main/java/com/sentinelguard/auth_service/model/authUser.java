@@ -2,6 +2,7 @@ package com.sentinelguard.auth_service.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Table (name = "auth_users")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class authUser {
 
 
@@ -29,8 +31,9 @@ public class authUser {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private role role;
 
     @Column(nullable = false,updatable = false)
     private LocalDateTime createAt;

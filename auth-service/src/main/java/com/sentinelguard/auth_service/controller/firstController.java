@@ -12,7 +12,7 @@ public class firstController {
     {
         return "hello auth service";
     }
-    //only for testing this is not auth branch of git
-    // this is api-gateway branch .
-    //before merging to main delete this file and merge it to main........
+
+
+
 }
