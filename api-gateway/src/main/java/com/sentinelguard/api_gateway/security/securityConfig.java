@@ -7,6 +7,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 public class securityConfig {
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http)
     {
@@ -16,6 +17,9 @@ public class securityConfig {
                         .pathMatchers("/auth/**").permitAll()
                         .pathMatchers("/actuator/health").permitAll()
                         .anyExchange().authenticated()
-                ).build();
+                )
+                .oauth2ResourceServer(oath2->oath2.jwt(jwt->{}))
+
+                .build();
     }
 }
