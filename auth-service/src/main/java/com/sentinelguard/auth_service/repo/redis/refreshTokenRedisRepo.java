@@ -71,4 +71,18 @@ public class refreshTokenRedisRepo {
         String key = "family:"+familyId;
         redisTemplate.opsForValue().set(key,"REVOKED");
     }
+
+    public void markTokenAsUsed(String tokenHash,String familyId,Duration ttl)
+    {
+        String redisToken = "used:"+tokenHash;
+
+        redisTemplate.opsForValue().set(redisToken,familyId);
+        redisTemplate.expire(redisToken,ttl);
+    }
+    public String getUsedToken(String tokenHash)
+    {
+        String usedToken = "used:"+tokenHash;
+
+       return redisTemplate.opsForValue().get(usedToken);
+    }
 }

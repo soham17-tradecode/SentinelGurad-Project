@@ -1,5 +1,6 @@
 package com.sentinelguard.auth_service.services;
 
+import com.sentinelguard.auth_service.exception.invalidRefreshTokenException;
 import com.sentinelguard.auth_service.repo.redis.refreshTokenRedisRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -79,22 +80,34 @@ public class refreshTokenService {
 
         String username = refreshTokenRedisRepo.getUsername(redisKey);
 
+//        String usedToken = refreshTokenRedisRepo.getUsedToken(tokenHash);
+
 
         if (username == null) {
-            throw new RuntimeException("invalid refresh token");
+
+            String usedToken = refreshTokenRedisRepo.getUsedToken(tokenHash);
+            if (usedToken!=null)
+            {
+                refreshTokenRedisRepo.revokeFamilyId(usedToken);
+                throw  new invalidRefreshTokenException("reject token as reused");
+            }
+
+
+
+            throw new invalidRefreshTokenException("invalid refresh token");
         }
 
         String familyId = refreshTokenRedisRepo.getFamilyId(redisKey);
 
         if (familyId == null) {
-            throw new RuntimeException("invalid token family");
+            throw new invalidRefreshTokenException("invalid token family");
         }
 
 
         String status = refreshTokenRedisRepo.getFamilyIdStatus(familyId);
 
         if (!"ACTIVE".equals(status)) {
-            throw new RuntimeException("token family is not active");
+            throw new invalidRefreshTokenException("token family is not active");
         }
 
 
@@ -107,6 +120,7 @@ public class refreshTokenService {
 
         String oldRedisKey = "refresh:" + oldHash;
         String familyId = refreshTokenRedisRepo.getFamilyId(oldRedisKey);
+        refreshTokenRedisRepo.markTokenAsUsed(oldHash,familyId,Duration.ofDays(7));
 
         refreshTokenRedisRepo.delete(oldRedisKey);
         return createRefreshToken(username, familyId);

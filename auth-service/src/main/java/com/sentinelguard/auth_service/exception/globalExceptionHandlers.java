@@ -22,4 +22,15 @@ public class globalExceptionHandlers {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
+    @ExceptionHandler(invalidRefreshTokenException.class)
+    public ResponseEntity<errorResponse> InvalidRefreshToken(invalidRefreshTokenException exception,HttpServletRequest request)
+    {
+        errorResponse response = new errorResponse();
+        response.setMessage(exception.getMessage());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setError(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        response.setPath(request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
 }
