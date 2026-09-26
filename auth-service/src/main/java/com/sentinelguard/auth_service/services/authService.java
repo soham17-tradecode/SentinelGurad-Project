@@ -1,8 +1,6 @@
 package com.sentinelguard.auth_service.services;
 
-import com.sentinelguard.auth_service.DTO.loginRequest;
-import com.sentinelguard.auth_service.DTO.registerRequest;
-import com.sentinelguard.auth_service.DTO.registerResponse;
+import com.sentinelguard.auth_service.DTO.*;
 import com.sentinelguard.auth_service.exception.invalidCredentialException;
 import com.sentinelguard.auth_service.jwt.jwtService;
 import com.sentinelguard.auth_service.model.authUser;
@@ -24,6 +22,7 @@ public class authService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final jwtService jwtService;
+    private final refreshTokenService refreshTokenService;
 
     //registration----------->
     public registerResponse register(registerRequest registerRequest)
@@ -50,7 +49,7 @@ public class authService {
                  .build();
     }
     //login------------>
-    public String login(loginRequest request)
+    public tokenResponse login(loginRequest request)
     {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -60,16 +59,44 @@ public class authService {
             GrantedAuthority authority = authentication.getAuthorities()
                     .iterator()
                     .next();
-            return jwtService.generateAccessToken(
+            String accessToken = jwtService.generateAccessToken(
                     authentication.getName(),
                     authority.getAuthority()
 
 
             );
+            String refreshToken = refreshTokenService.createRefreshToken(authentication.getName(),null);
+            return new tokenResponse(accessToken,refreshToken);
         }catch (AuthenticationException e)
         {
             throw new invalidCredentialException("invalid username or password");
         }
 
+    }
+
+    public tokenResponse refresh(refreshTokenRequest request)
+    {
+        String username = refreshTokenService.validateAndGetUsername(request.getRefreshToken());
+
+        String role = getUserRole(username);
+
+        String newAccessToken = jwtService.generateAccessToken(username,role);
+
+        String newRefreshToken = refreshTokenService.rotateRefreshToken(request.getRefreshToken());
+        return new tokenResponse(newAccessToken,newRefreshToken);
+
+    }
+
+
+
+
+
+
+    //getting user role------>
+    public String getUserRole(String username)
+    {
+        authUser user = userRepo.findByUsername(username).orElseThrow(()->new RuntimeException("user not found"));
+
+        return "ROLE_" + user.getRole().name();
     }
 }
