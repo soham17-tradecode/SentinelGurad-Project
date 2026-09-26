@@ -1,6 +1,9 @@
 package com.sentinelguard.auth_service.services;
 
+import com.sentinelguard.auth_service.DTO.refreshTokenRotationResponse;
 import com.sentinelguard.auth_service.exception.invalidRefreshTokenException;
+import com.sentinelguard.auth_service.repo.redis.refreshTokenConsumeResponse;
+import com.sentinelguard.auth_service.repo.redis.refreshTokenConsumeResult;
 import com.sentinelguard.auth_service.repo.redis.refreshTokenRedisRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,57 +76,37 @@ public class refreshTokenService {
     }
 
 
-    public String validateAndGetUsername(String refreshToken) {
-        String tokenHash = hashRefreshToken(refreshToken);
+    public refreshTokenRotationResponse rotateRefreshToken(String oldRefreshToken) {
+//        String username = validateAndGetUsername(oldRefreshToken);
+        String oldHash = hashRefreshToken(oldRefreshToken);
+        refreshTokenConsumeResponse response = refreshTokenRedisRepo.consumeRefreshTokenAtomically(oldHash);
 
-        String redisKey = "refresh:" + tokenHash;
-
-        String username = refreshTokenRedisRepo.getUsername(redisKey);
-
-//        String usedToken = refreshTokenRedisRepo.getUsedToken(tokenHash);
-
-
-        if (username == null) {
-
-            String usedToken = refreshTokenRedisRepo.getUsedToken(tokenHash);
-            if (usedToken!=null)
-            {
-                refreshTokenRedisRepo.revokeFamilyId(usedToken);
-                throw  new invalidRefreshTokenException("reject token as reused");
-            }
-
-
-
-            throw new invalidRefreshTokenException("invalid refresh token");
+        if (response.getResult() == refreshTokenConsumeResult.REUSED) {
+            throw new invalidRefreshTokenException("refresh token reuse detected");
         }
 
-        String familyId = refreshTokenRedisRepo.getFamilyId(redisKey);
-
-        if (familyId == null) {
-            throw new invalidRefreshTokenException("invalid token family");
-        }
-
-
-        String status = refreshTokenRedisRepo.getFamilyIdStatus(familyId);
-
-        if (!"ACTIVE".equals(status)) {
+        if (response.getResult() == refreshTokenConsumeResult.FAMILY_REVOKED) {
             throw new invalidRefreshTokenException("token family is not active");
         }
 
+        if (response.getResult() == refreshTokenConsumeResult.INVALID) {
+            throw new invalidRefreshTokenException("invalid refresh token");
+        }
+        if (response.getResult() == refreshTokenConsumeResult.CONFLICT) {
+            throw new invalidRefreshTokenException(
+                    "refresh token request conflict"
+            );
+        }
 
-        return username;
-    }
+//        String oldRedisKey = "refresh:" + oldHash;
+//        String familyId = refreshTokenRedisRepo.getFamilyId(oldRedisKey);
+//        refreshTokenRedisRepo.markTokenAsUsed(oldHash,familyId,Duration.ofDays(7));
+//
+//        refreshTokenRedisRepo.delete(oldRedisKey);
+//        return createRefreshToken(username, familyId);
 
-    public String rotateRefreshToken(String oldRefreshToken) {
-        String username = validateAndGetUsername(oldRefreshToken);
-        String oldHash = hashRefreshToken(oldRefreshToken);
-
-        String oldRedisKey = "refresh:" + oldHash;
-        String familyId = refreshTokenRedisRepo.getFamilyId(oldRedisKey);
-        refreshTokenRedisRepo.markTokenAsUsed(oldHash,familyId,Duration.ofDays(7));
-
-        refreshTokenRedisRepo.delete(oldRedisKey);
-        return createRefreshToken(username, familyId);
+         String newRefreshToken= createRefreshToken(response.getUsername(),response.getFamilyId());
+        return new refreshTokenRotationResponse(response.getUsername(),newRefreshToken);
     }
 
 }

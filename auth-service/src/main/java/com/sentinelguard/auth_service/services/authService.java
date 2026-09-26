@@ -76,14 +76,16 @@ public class authService {
 
     public tokenResponse refresh(refreshTokenRequest request)
     {
-        String username = refreshTokenService.validateAndGetUsername(request.getRefreshToken());
+        refreshTokenRotationResponse rotationResponse = refreshTokenService.rotateRefreshToken(request.getRefreshToken());
+
+        String username = rotationResponse.getUsername();
 
         String role = getUserRole(username);
 
         String newAccessToken = jwtService.generateAccessToken(username,role);
 
-        String newRefreshToken = refreshTokenService.rotateRefreshToken(request.getRefreshToken());
-        return new tokenResponse(newAccessToken,newRefreshToken);
+
+        return new tokenResponse(newAccessToken, rotationResponse.getRefreshToken());
 
     }
 

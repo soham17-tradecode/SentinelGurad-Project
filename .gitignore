@@ -18,3 +18,5 @@ Thumbs.db
 
 api-gateway/keys/
 auth-service/keys/
+
+refresh-test.http
