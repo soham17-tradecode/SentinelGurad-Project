@@ -108,20 +108,40 @@ public class refreshTokenRedisRepo {
                         String usedFamilyId = (String) operations.opsForValue()
                                 .get(usedKey);
 
-                        operations.unwatch();
 
                         if (usedFamilyId != null) {
+                            String familyKey = "family:" + usedFamilyId;
 
-                            refreshTokenRedisRepo.this.revokeFamilyId(usedFamilyId);
+                            operations.watch(familyKey);
+
+                           String currentFamilyStatus = (String) operations.opsForValue().get(familyKey);
+                           if (!"ACTIVE".equals(currentFamilyStatus))
+                           {
+                               operations.unwatch();
+                               return List.of("FAMILY_REVOKED");
+                           }
+                           operations.multi();
+                           operations.opsForValue().set(familyKey,"REVOKED");
+
+                           List<Object> execResult = operations.exec();
+
+                           if (execResult == null)
+                           {
+                               return null;
+                           }
 
                             return List.of("REUSED");
                         }
+                        operations.unwatch();
 
                         return List.of("INVALID");
                     }
+                    String familyKey = "family:" + familyId;
+
+                    operations.watch(familyKey);
 
                     String familyStatus = (String) operations.opsForValue()
-                            .get("family:" + familyId);
+                            .get(familyKey);
 
                     if (!"ACTIVE".equals(familyStatus)) {
 
