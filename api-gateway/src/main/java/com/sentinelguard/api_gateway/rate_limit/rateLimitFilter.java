@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 public class rateLimitFilter implements GlobalFilter, Ordered {
     private final rateLimitService rateLimitService;
     private final ipBlockService ipBlockService;
+    private final securityAuditService securityAuditService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -21,7 +22,8 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
                 .getRemoteAddress()
                 .getAddress()
                 .getHostAddress();
-        System.out.println("CLIENT IP = " + clientIp);
+
+
         if ("0:0:0:0:0:0:0:1".equals(clientIp)) {
             clientIp = "127.0.0.1";
         }
@@ -31,6 +33,7 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
 
         if (blocked) {
             exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+            securityAuditService.logSecurityEvent("IP_BLOCKED", clientIp, exchange);
             return exchange.getResponse().setComplete();
         }
 
@@ -39,6 +42,7 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
+        securityAuditService.logSecurityEvent("RATE_LIMIT_EXCEEDED", clientIp, exchange);
 
 
         return exchange.getResponse().setComplete();
