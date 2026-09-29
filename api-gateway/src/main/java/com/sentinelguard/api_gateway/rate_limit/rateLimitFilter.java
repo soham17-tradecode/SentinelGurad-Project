@@ -24,7 +24,7 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
         System.out.println("CLIENT IP = " + clientIp);
         if ("0:0:0:0:0:0:0:1".equals(clientIp)) {
             clientIp = "127.0.0.1";
-        }e
+        }
 
         boolean blocked = ipBlockService.isIpBlocked(clientIp);
 
