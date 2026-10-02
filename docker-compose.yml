@@ -35,6 +35,10 @@ services:
     container_name: sentinel-user-service
     ports:
       - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sentinel_user
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - sentinel-network
 
