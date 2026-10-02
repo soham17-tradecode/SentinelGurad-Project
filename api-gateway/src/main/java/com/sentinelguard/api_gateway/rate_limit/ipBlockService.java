@@ -5,9 +5,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+
 public class ipBlockService {
     private final StringRedisTemplate redisTemplate;
+
+    public ipBlockService(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     public boolean isIpBlocked(String clientIp) {
 
