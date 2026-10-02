@@ -18,7 +18,7 @@ public class securityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange->exchange
                         .pathMatchers("/auth/**").permitAll()
-                        .pathMatchers("/actuator/health").permitAll()
+                        .pathMatchers("/actuator/health","/actuator/prometheus").permitAll()
                         .pathMatchers("/admin/**").hasRole("ADMIN")
                         .anyExchange().authenticated()
                 )
