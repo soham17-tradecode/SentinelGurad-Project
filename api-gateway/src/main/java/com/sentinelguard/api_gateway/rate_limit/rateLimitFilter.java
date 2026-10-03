@@ -30,6 +30,7 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
                 .getHostAddress();
 
 
+
         if ("0:0:0:0:0:0:0:1".equals(clientIp)) {
             clientIp = "127.0.0.1";
         }
