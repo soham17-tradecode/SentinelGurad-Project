@@ -35,6 +35,10 @@ public class users {
     private String email;
     @NotBlank
     private String fullName;
+
+    @Column(nullable = false ,unique = true)
+    private Long authUserId;
+
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 

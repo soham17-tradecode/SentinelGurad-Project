@@ -37,6 +37,7 @@ public class securityConfig {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
         converter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+        converter.setPrincipalClaimName("userId");
 
         return  new ReactiveJwtAuthenticationConverterAdapter(converter);
 

@@ -14,12 +14,13 @@ import java.time.Instant;
 public class jwtService {
     private final JwtEncoder jwtEncoder;
 
-    public String generateAccessToken(String username, String role)
+    public String generateAccessToken(Long userId,String username, String role)
     {
         Instant now = Instant.now();
 
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                 .subject(username)
+                .claim("userId",userId)
                 .claim("role",role)
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(900))

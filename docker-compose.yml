@@ -54,6 +54,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
+      USER_SERVICE_URL: http://user-service:8083
     volumes:
       - ./auth-service/keys:/app/keys:ro
     networks:

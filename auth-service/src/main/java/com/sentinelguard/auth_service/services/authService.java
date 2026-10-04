@@ -14,7 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.sentinelguard.auth_service.client.userServiceClient;
 @Service
 @RequiredArgsConstructor
 public class authService {
@@ -23,6 +23,7 @@ public class authService {
     private final AuthenticationManager authenticationManager;
     private final jwtService jwtService;
     private final refreshTokenService refreshTokenService;
+    private final userServiceClient userServiceClient;
 
     //registration----------->
     public registerResponse register(registerRequest registerRequest)
@@ -42,6 +43,10 @@ public class authService {
                 .role(role.USER)
                 .build();
          userRepo.save(user);
+         userServiceClient.createUserProfile(user.getId(),
+                 user.getUsername(),
+                 user.getEmail(),
+                 registerRequest.getFullName());
          return registerResponse.builder()
                  .username(user.getUsername())
                  .email(user.getEmail())
@@ -59,7 +64,10 @@ public class authService {
             GrantedAuthority authority = authentication.getAuthorities()
                     .iterator()
                     .next();
+            authUser user = userRepo.findByUsername(authentication.getName()).orElseThrow(()->
+                    new invalidCredentialException("user not found"));
             String accessToken = jwtService.generateAccessToken(
+                    user.getId(),
                     authentication.getName(),
                     authority.getAuthority()
 
@@ -79,10 +87,12 @@ public class authService {
         refreshTokenRotationResponse rotationResponse = refreshTokenService.rotateRefreshToken(request.getRefreshToken());
 
         String username = rotationResponse.getUsername();
+        authUser user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new invalidCredentialException("user not found"));
 
         String role = getUserRole(username);
 
-        String newAccessToken = jwtService.generateAccessToken(username,role);
+        String newAccessToken = jwtService.generateAccessToken(user.getId(),username,role);
 
 
         return new tokenResponse(newAccessToken, rotationResponse.getRefreshToken());

@@ -10,17 +10,13 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
-
+@RequiredArgsConstructor
 public class rateLimitFilter implements GlobalFilter, Ordered {
     private final rateLimitService rateLimitService;
     private final ipBlockService ipBlockService;
     private final securityAuditService securityAuditService;
 
-    public rateLimitFilter(rateLimitService rateLimitService, ipBlockService ipBlockService, securityAuditService securityAuditService) {
-        this.rateLimitService = rateLimitService;
-        this.ipBlockService = ipBlockService;
-        this.securityAuditService = securityAuditService;
-    }
+
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

@@ -10,6 +10,7 @@ import com.sentinelguard.user_service.repo.userRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 
@@ -130,6 +131,12 @@ public class userService {
             userResponseDTO.setUpdateAt(users.getUpdateAt());
             return userResponseDTO;
         });
+    }
+
+    public users findByAuthUserId(Long authUserId)
+    {
+        return userRepo.findByAuthUserId(authUserId).orElseThrow(()->
+                new userNotFoundException("user not found for auth user id :"+authUserId));
     }
 
 }

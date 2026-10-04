@@ -24,14 +24,28 @@ public class simpleController {
     @Autowired
     userService userService;
 
-    @GetMapping("/me")
-    public String hello() {
-        return "hi from now ";
+
+    @GetMapping("/users/me")
+    public ResponseEntity<userResponseDTO> getMyProfile(
+            @RequestHeader("X-User-Id") Long authUserId) {
+
+        users user = userService.findByAuthUserId(authUserId);
+
+        userResponseDTO response = new userResponseDTO();
+        response.setId(user.getId());
+        response.setUsername(user.getUsername());
+        response.setEmail(user.getEmail());
+        response.setFullName(user.getFullName());
+        response.setCreateAt(user.getCreateAt());
+        response.setUpdateAt(user.getUpdateAt());
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<userResponseDTO> saveUsers(@Valid @RequestBody userDTO users) {
+    public ResponseEntity<userResponseDTO> saveUsers( @RequestHeader("X-Auth-User-Id") Long authUserId,@Valid @RequestBody userDTO users) {
         users users1 = new users();
+        users1.setAuthUserId(authUserId);
         users1.setUsername(users.getUsername());
         users1.setEmail(users.getEmail());
         users1.setFullName(users.getFullName());
