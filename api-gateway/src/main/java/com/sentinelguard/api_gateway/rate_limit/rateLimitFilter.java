@@ -1,5 +1,9 @@
 package com.sentinelguard.api_gateway.rate_limit;
 
+import com.sentinelguard.api_gateway.security.securityEvent.securityEvent;
+import com.sentinelguard.api_gateway.security.threatDetectionService.threatDetectionService;
+import com.sentinelguard.api_gateway.security.threatResponseService;
+import com.sentinelguard.api_gateway.security.threatScore.threatScore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -15,7 +19,8 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
     private final rateLimitService rateLimitService;
     private final ipBlockService ipBlockService;
     private final securityAuditService securityAuditService;
-
+    private final threatDetectionService threatDetectionService;
+    private final threatResponseService threatResponseService;
 
 
     @Override
@@ -26,7 +31,6 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
                 .getHostAddress();
 
 
-
         if ("0:0:0:0:0:0:0:1".equals(clientIp)) {
             clientIp = "127.0.0.1";
         }
@@ -35,7 +39,9 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
 
 
         if (blocked) {
+
             exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+
             securityAuditService.logSecurityEvent("IP_BLOCKED", clientIp, exchange);
             return exchange.getResponse().setComplete();
         }
@@ -45,7 +51,28 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
-        securityAuditService.logSecurityEvent("RATE_LIMIT_EXCEEDED", clientIp, exchange);
+
+        securityEvent event = new securityEvent(
+                "RATE_LIMIT_EXCEEDED",
+                clientIp,
+                exchange.getRequest().getMethod().name(),
+                exchange.getRequest().getPath().value()
+        );
+
+
+        threatScore threatScore = threatDetectionService.detect(event);
+        //block ip -->
+        if ("CRITICAL".equals(threatScore.level()))
+        {
+            threatResponseService.blockIpTemporarily(clientIp);
+            securityAuditService.logSecurityEvent("THREAT_CRITICAL",
+                    clientIp,
+                    exchange);
+        }
+
+
+        securityAuditService.logSecurityEvent("RATE_LIMIT_EXCEEDED",
+                clientIp, exchange);
 
 
         return exchange.getResponse().setComplete();
