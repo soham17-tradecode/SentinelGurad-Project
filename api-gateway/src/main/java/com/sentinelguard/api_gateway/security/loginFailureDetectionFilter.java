@@ -1,7 +1,9 @@
 package com.sentinelguard.api_gateway.security;
 
+import com.sentinelguard.api_gateway.rate_limit.securityAuditService;
 import com.sentinelguard.api_gateway.security.securityEvent.securityEvent;
 import com.sentinelguard.api_gateway.security.threatDetectionService.threatDetectionService;
+import com.sentinelguard.api_gateway.security.threatScore.threatScore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -18,6 +20,8 @@ import reactor.core.publisher.Mono;
 public class loginFailureDetectionFilter implements GlobalFilter, Ordered {
 
     private final threatDetectionService threatDetectionService;
+    private final securityAuditService securityAuditService;
+    private final threatResponseService threatResponseService;
 
 
     @Override
@@ -34,7 +38,7 @@ public class loginFailureDetectionFilter implements GlobalFilter, Ordered {
                     if ("/auth/login".equals(path) && status != null && status.value() == 401) {
                         securityEvent securityEvent = getSecurityEvent(exchange, path);
 
-                        threatDetectionService.detect(securityEvent);
+
 
 
                     }
@@ -44,7 +48,7 @@ public class loginFailureDetectionFilter implements GlobalFilter, Ordered {
                 }));
     }
 
-    private static securityEvent getSecurityEvent (ServerWebExchange exchange, String path) {
+    private  securityEvent getSecurityEvent (ServerWebExchange exchange, String path) {
         String clientIp = exchange.getRequest().
                 getRemoteAddress()
                 .getAddress().
@@ -60,6 +64,17 @@ public class loginFailureDetectionFilter implements GlobalFilter, Ordered {
                 exchange.getRequest().getMethod().name(),
                 path
         );
+
+        threatScore threatScore = threatDetectionService.detect(securityEvent);
+
+        if ("CRITICAL".equals(threatScore.level()))
+        {
+            threatResponseService.blockIpTemporarily(clientIp);
+            securityAuditService.logSecurityEvent("THREAT_CRITICAL",
+                    clientIp,
+                    exchange);
+
+        }
         return securityEvent;
     }
 
