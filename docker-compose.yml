@@ -138,6 +138,25 @@ services:
     networks:
       - sentinel-network
 
+  threat-monitoring-service:
+    build:
+      context: ./threat-monitoring-service
+      dockerfile: Dockerfile
+    container_name: sentinel-threat-monitoring
+
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sentinel_threat_monitoring
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+
+    ports:
+      - "8084:8084"
+    depends_on:
+      - kafka
+    networks:
+      - sentinel-network
+
 
 
 networks:
