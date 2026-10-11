@@ -1,6 +1,7 @@
 package com.sentinelguard.api_gateway.rate_limit;
 
 import com.sentinelguard.api_gateway.security.securityEvent.securityEvent;
+import com.sentinelguard.api_gateway.security.securityEventProducer;
 import com.sentinelguard.api_gateway.security.threatDetectionService.threatDetectionService;
 import com.sentinelguard.api_gateway.security.threatResponseService;
 import com.sentinelguard.api_gateway.security.threatScore.threatScore;
@@ -21,6 +22,7 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
     private final securityAuditService securityAuditService;
     private final threatDetectionService threatDetectionService;
     private final threatResponseService threatResponseService;
+    private final securityEventProducer securityEventProducer;
 
 
     @Override
@@ -73,6 +75,7 @@ public class rateLimitFilter implements GlobalFilter, Ordered {
 
         securityAuditService.logSecurityEvent("RATE_LIMIT_EXCEEDED",
                 clientIp, exchange);
+        securityEventProducer.publish(event);
 
 
         return exchange.getResponse().setComplete();

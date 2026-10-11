@@ -22,6 +22,7 @@ public class loginFailureDetectionFilter implements GlobalFilter, Ordered {
     private final threatDetectionService threatDetectionService;
     private final securityAuditService securityAuditService;
     private final threatResponseService threatResponseService;
+    private final securityEventProducer securityEventProducer;
 
 
     @Override
@@ -37,6 +38,7 @@ public class loginFailureDetectionFilter implements GlobalFilter, Ordered {
 
                     if ("/auth/login".equals(path) && status != null && status.value() == 401) {
                         securityEvent securityEvent = getSecurityEvent(exchange, path);
+                        securityEventProducer.publish(securityEvent);
 
 
 
