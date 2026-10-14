@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface securityEventRepo extends JpaRepository<securityEventEntity, Long> {
+
+    long countByEvents(String events);
+    long countByEventsIn(java.util.Collection<String> events);
 }
