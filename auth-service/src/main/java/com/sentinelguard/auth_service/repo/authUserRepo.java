@@ -13,5 +13,7 @@ public interface authUserRepo extends JpaRepository<authUser,Long> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 
+    boolean existsByRole(com.sentinelguard.auth_service.model.role role);
+
 
 }

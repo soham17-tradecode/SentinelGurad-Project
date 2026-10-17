@@ -98,13 +98,6 @@ public class refreshTokenService {
             );
         }
 
-//        String oldRedisKey = "refresh:" + oldHash;
-//        String familyId = refreshTokenRedisRepo.getFamilyId(oldRedisKey);
-//        refreshTokenRedisRepo.markTokenAsUsed(oldHash,familyId,Duration.ofDays(7));
-//
-//        refreshTokenRedisRepo.delete(oldRedisKey);
-//        return createRefreshToken(username, familyId);
-
          String newRefreshToken= createRefreshToken(response.getUsername(),response.getFamilyId());
         return new refreshTokenRotationResponse(response.getUsername(),newRefreshToken);
     }

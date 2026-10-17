@@ -39,9 +39,8 @@ public class securityEventSummaryController {
 
     @GetMapping
     public Page<securityEventEntity> securityEventEntity(@RequestParam String eventType,
-                                                         @PageableDefault (size = 10,sort = "receivedAt",
-                                                                 direction = Sort.Direction.DESC) Pageable pageable)
-    {
+                                                         @PageableDefault(size = 10, sort = "receivedAt",
+                                                                 direction = Sort.Direction.DESC) Pageable pageable) {
         return securityEventSearchService.searchByEventType(eventType, pageable);
     }
 

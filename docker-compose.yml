@@ -50,6 +50,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       USER_SERVICE_URL: http://user-service:8083
+      APP_BOOTSTRAP_ADMIN_SECRET: ${INITIAL_ADMIN_SETUP_SECRET:?INITIAL_ADMIN_SETUP_SECRET must be set}
     volumes:
       - ./auth-service/keys:/app/keys:ro
     networks:
@@ -149,6 +150,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sentinel_threat_monitoring
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_PUBLIC_KEY_PATH: /app/keys/public_key.pem
+
+    volumes:
+      - ./auth-service/keys/public_key.pem:/app/keys/public_key.pem:ro
+
+
 
     ports:
       - "8084:8084"
