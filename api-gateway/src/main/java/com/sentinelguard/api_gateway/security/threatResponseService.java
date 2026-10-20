@@ -13,7 +13,7 @@ public class threatResponseService {
 
     public void blockIpTemporarily(String clientIp)
     {
-        String key = "blocked_ip:" + clientIp;
+        String key = "blocked_ip:auto:" + clientIp;
 
         stringRedisTemplate.opsForValue().set(key,"blocked", Duration.ofMinutes(10));
     }
