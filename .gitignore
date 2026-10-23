@@ -21,4 +21,3 @@ api-gateway/keys/
 auth-service/keys/
 
 refresh-test.http
-load-test
