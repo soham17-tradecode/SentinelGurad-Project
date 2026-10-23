@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentinel Guard | API Security Platform</title>
+<style>
+:root{--ink:#252b27;--muted:#68716b;--line:#e2e6e2;--surface:#f6f8f6;--green:#32664b;--green-dark:#274f3a;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:var(--white);line-height:1.6}
+a{color:inherit;text-decoration:none}.shell{max-width:1160px;margin:auto;padding:0 28px}
+header{height:82px;border-bottom:1px solid var(--line);display:flex;align-items:center}
+.nav{display:flex;align-items:center;justify-content:space-between;width:100%;gap:20px}
+.brand{font-weight:750;font-size:20px;letter-spacing:-.5px}.brand-mark{display:inline-grid;place-items:center;width:31px;height:31px;border-radius:8px;background:#e8efe9;color:var(--green);margin-right:9px;font-size:17px}
+.nav-actions{display:flex;align-items:center;gap:20px;font-size:14px}.muted-link{color:var(--muted)}.muted-link:hover{color:var(--ink)}
+.btn{display:inline-flex;justify-content:center;align-items:center;min-height:44px;padding:0 18px;border-radius:7px;font-size:14px;font-weight:650;border:1px solid transparent;transition:background .15s,border-color .15s}
+.btn-primary{background:var(--green);color:white}.btn-primary:hover{background:var(--green-dark)}
+.btn-secondary{background:white;border-color:#cfd7d0;color:var(--ink)}.btn-secondary:hover{background:var(--surface)}
+.hero{padding:86px 0 76px;display:grid;grid-template-columns:1.15fr .85fr;gap:72px;align-items:center}
+.eyebrow{color:var(--green);font-size:12px;font-weight:750;letter-spacing:1.7px;text-transform:uppercase}
+h1{font-size:clamp(38px,5vw,58px);line-height:1.08;letter-spacing:-2px;margin:20px 0 22px;max-width:660px}
+.lead{font-size:17px;line-height:1.8;color:var(--muted);max-width:590px;margin:0}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}.note{font-size:12px;color:var(--muted);margin-top:17px}
+.security-panel{border:1px solid var(--line);border-radius:12px;padding:28px;background:#fff;box-shadow:0 14px 40px rgba(30,50,35,.055)}
+.panel-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:19px;border-bottom:1px solid var(--line);font-weight:700;font-size:14px}
+.status{font-size:11px;color:var(--green);background:#edf4ee;padding:5px 8px;border-radius:4px;font-weight:700}
+.signal{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}.signal:last-child{border-bottom:0;padding-bottom:0}
+.signal-icon{width:36px;height:36px;flex:0 0 36px;border-radius:8px;background:#f0f3f0;display:grid;place-items:center;color:var(--green);font-weight:750}
+.signal strong{display:block;font-size:14px;margin:0 0 3px}.signal p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.features{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:46px 0}
+.features h2{font-size:22px;letter-spacing:-.5px;margin:0 0 8px}.features-intro{color:var(--muted);margin:0 0 25px;font-size:14px}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.feature{background:white;border:1px solid var(--line);border-radius:9px;padding:22px}
+.feature h3{font-size:15px;margin:0 0 8px}.feature p{font-size:13px;line-height:1.7;color:var(--muted);margin:0}
+footer{padding:25px 0;color:var(--muted);font-size:12px}
+@media(max-width:780px){.hero{grid-template-columns:1fr;gap:36px;padding:55px 0}.feature-grid{grid-template-columns:1fr}.nav-actions{gap:12px}.shell{padding:0 20px}h1{letter-spacing:-1.3px}}
+@media(max-width:460px){.nav-actions .muted-link{display:none}.btn{padding:0 13px}.brand{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div class="shell nav">
+<a class="brand" th:href="@{/}"><span class="brand-mark">S</span>Sentinel Guard</a>
+<nav class="nav-actions" aria-label="Account navigation">
+<a class="muted-link" th:href="@{/login}">Sign in</a>
+<a class="btn btn-primary" th:href="@{/register}">Create account</a>
+</nav>
+</div></header>
+<main>
+<section class="shell hero">
+<div>
+<div class="eyebrow">API security operations</div>
+<h1>Make your API security visible and actionable.</h1>
+<p class="lead">Sentinel Guard brings API access control, threat-event monitoring, and security operations into one workspace—so your team can understand suspicious activity and respond with confidence.</p>
+<div class="actions">
+<a class="btn btn-primary" th:href="@{/login}">Sign in to your account</a>
+<a class="btn btn-secondary" th:href="@{/register}">Create a user account</a>
+</div>
+<p class="note">Already registered? Sign in with your existing Sentinel Guard credentials.</p>
+</div>
+<aside class="security-panel" aria-label="Platform capabilities">
+<div class="panel-head"><span>Security workspace</span><span class="status">ACCESS CONTROLLED</span></div>
+<div class="signal"><div class="signal-icon">01</div><div><strong>API access protection</strong><p>Authentication, role-aware access, and gateway controls.</p></div></div>
+<div class="signal"><div class="signal-icon">02</div><div><strong>Threat event visibility</strong><p>Review security events collected for investigation.</p></div></div>
+<div class="signal"><div class="signal-icon">03</div><div><strong>Operational monitoring</strong><p>Connect security operations with your observability tools.</p></div></div>
+</aside>
+</section>
+<section class="features"><div class="shell">
+<h2>Security controls in one place</h2><p class="features-intro">A focused workspace for protected access and operational awareness.</p>
+<div class="feature-grid">
+<article class="feature"><h3>Controlled access</h3><p>Sign-in and role-based authorization help keep protected operations available only to permitted accounts.</p></article>
+<article class="feature"><h3>Threat monitoring</h3><p>Use the workspace to review security-event activity as the relevant backend integrations become available.</p></article>
+<article class="feature"><h3>Operational visibility</h3><p>Access monitoring tools configured for your Sentinel Guard environment.</p></article>
+</div></div></section>
+</main>
+<footer><div class="shell">Sentinel Guard · API Security and Threat Monitoring</div></footer>
+</body></html>

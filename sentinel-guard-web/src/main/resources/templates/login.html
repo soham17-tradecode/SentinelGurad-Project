@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign In | Sentinel Guard</title>
+    <style>
+        :root{--ink:#252b27;--muted:#68716b;--line:#dfe5df;--surface:#f6f8f6;--green:#32664b;--green-dark:#274f3a}
+        *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#f4f6f4;color:var(--ink);font-family:Inter,Arial,sans-serif}
+        .layout{width:100%;max-width:930px;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:white}
+        .intro{padding:46px 38px;background:#f7f9f7;border-right:1px solid var(--line)}.brand{font-size:20px;font-weight:750}.brand-mark{display:inline-grid;place-items:center;background:#e8efe9;color:var(--green);width:30px;height:30px;border-radius:7px;margin-right:8px}
+        .intro h1{font-size:33px;line-height:1.2;letter-spacing:-1px;margin:70px 0 16px}.intro p{font-size:14px;line-height:1.8;color:var(--muted)}
+        .feature{font-size:13px;margin-top:18px;color:#47564b}.form-panel{padding:46px 38px}.form-panel h2{font-size:26px;margin:0 0 8px;letter-spacing:-.5px}.subtitle{font-size:14px;color:var(--muted);line-height:1.6;margin:0 0 25px}
+        label{display:block;font-size:13px;font-weight:650;margin:18px 0 8px}input{width:100%;padding:12px 13px;border:1px solid #cfd8d0;border-radius:6px;background:#fff;color:var(--ink);font-size:14px}input:focus{outline:2px solid #9bb8a3;outline-offset:1px}
+        button{width:100%;margin-top:25px;padding:13px;border:0;border-radius:6px;background:var(--green);color:white;font-size:14px;font-weight:700;cursor:pointer}button:hover{background:var(--green-dark)}
+        .message{margin:0 0 16px;padding:11px 12px;border-radius:6px;font-size:13px;line-height:1.5}.error{background:#fff0ef;border:1px solid #edc4bf;color:#8d2922}.success{background:#edf6ef;border:1px solid #c7dfcb;color:#245d34}
+        .notice{margin-top:18px;font-size:12px;line-height:1.6;color:var(--muted)}.register-link{margin-top:24px;padding-top:19px;border-top:1px solid var(--line);text-align:center;font-size:13px;color:var(--muted)}
+        a{color:var(--green);font-weight:700;text-decoration:none}a:hover{text-decoration:underline}
+        @media(max-width:700px){.layout{grid-template-columns:1fr}.intro{padding:27px;border-right:0;border-bottom:1px solid var(--line)}.intro h1{margin:27px 0 12px;font-size:27px}.form-panel{padding:30px 27px}}
+    </style>
+</head>
+<body>
+<main class="layout">
+    <section class="intro">
+        <a class="brand" th:href="@{/}"><span class="brand-mark">S</span>Sentinel Guard</a>
+        <h1>Security starts with visibility.</h1>
+        <p>Access your security operations workspace to review the information and tools permitted for your account.</p>
+        <div class="feature">✓ API security monitoring</div>
+        <div class="feature">✓ Threat detection and event tracking</div>
+        <div class="feature">✓ Role-based access control</div>
+    </section>
+    <section class="form-panel">
+        <h2>Welcome back</h2>
+        <p class="subtitle">Sign in to your Sentinel Guard account.</p>
+        <div th:if="${loginError}" class="message error" role="alert" th:text="${loginError}"></div>
+        <div th:if="${registerSuccess}" class="message success" role="status" th:text="${registerSuccess}"></div>
+        <p th:if="${param.logout}" class="message success" role="status">You have been signed out.</p>
+        <form th:action="@{/login}" method="post">
+            <label for="username">Username or email</label><input id="username" name="username" type="text"
+                                                                  autocomplete="username" maxlength="120"
+                                                                  placeholder="Enter your username or email" required>
+            <label for="password">Password</label><input id="password" name="password" type="password"
+                                                         autocomplete="current-password" maxlength="256"
+                                                         placeholder="Enter your password" required>
+            <button type="submit">Sign in securely</button>
+        </form>
+        <p class="notice">Your dashboard and available actions depend on your assigned account role. Never share your
+            credentials.</p>
+        <div class="register-link">Don't have an account? <a th:href="@{/register}">Create a user account</a></div>
+    </section>
+</main>
+</body>
+</html>

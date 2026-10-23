@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create Account | Sentinel Guard</title>
+<style>
+:root{--ink:#252b27;--muted:#68716b;--line:#dfe5df;--green:#32664b;--green-dark:#274f3a}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#f4f6f4;color:var(--ink);font-family:Inter,Arial,sans-serif}
+.panel{width:100%;max-width:490px;padding:36px;background:white;border:1px solid var(--line);border-radius:12px}
+.brand{font-size:20px;font-weight:750;text-decoration:none;color:var(--ink)}.brand-mark{display:inline-grid;place-items:center;background:#e8efe9;color:var(--green);width:30px;height:30px;border-radius:7px;margin-right:8px}
+h1{font-size:27px;letter-spacing:-.6px;margin:27px 0 7px}.subtitle{font-size:14px;line-height:1.6;color:var(--muted);margin:0 0 20px}
+label{display:block;font-size:13px;font-weight:650;margin:16px 0 7px}input{width:100%;padding:12px 13px;border:1px solid #cfd8d0;border-radius:6px;background:white;color:var(--ink);font-size:14px}input:focus{outline:2px solid #9bb8a3;outline-offset:1px}
+button{width:100%;margin-top:24px;padding:13px;border:0;border-radius:6px;background:var(--green);color:white;font-size:14px;font-weight:700;cursor:pointer}button:hover{background:var(--green-dark)}
+.message{margin:15px 0;padding:11px 12px;border-radius:6px;font-size:13px;line-height:1.5}.error{background:#fff0ef;border:1px solid #edc4bf;color:#8d2922}.success{background:#edf6ef;border:1px solid #c7dfcb;color:#245d34}
+.footer{text-align:center;margin:22px 0 0;color:var(--muted);font-size:13px}a{color:var(--green);font-weight:700;text-decoration:none}a:hover{text-decoration:underline}
+@media(max-width:480px){.panel{padding:26px 21px}}
+</style>
+</head>
+<body><main class="panel">
+<a class="brand" th:href="@{/}"><span class="brand-mark">S</span>Sentinel Guard</a>
+<h1>Create your account</h1><p class="subtitle">Register a user account to access Sentinel Guard.</p>
+<div th:if="${registerError}" class="message error" role="alert" th:text="${registerError}"></div>
+<div th:if="${registerSuccess}" class="message success" role="status" th:text="${registerSuccess}"></div>
+<form th:action="@{/register}" method="post">
+<label for="fullName">Full name</label><input id="fullName" name="fullName" type="text" maxlength="100" autocomplete="name" required>
+<label for="username">Username</label><input id="username" name="username" type="text" minlength="3" maxlength="50" autocomplete="username" required>
+<label for="email">Email address</label><input id="email" name="email" type="email" maxlength="254" autocomplete="email" required>
+<label for="password">Password</label><input id="password" name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required>
+<label for="confirmPassword">Confirm password</label><input id="confirmPassword" name="confirmPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password" required>
+<button type="submit">Create user account</button>
+</form>
+<p class="footer">Already registered? <a th:href="@{/login}">Sign in</a></p>
+</main></body></html>

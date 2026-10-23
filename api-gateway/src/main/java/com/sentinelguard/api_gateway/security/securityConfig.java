@@ -16,12 +16,27 @@ public class securityConfig {
     {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchange->exchange
+
+                .authorizeExchange(exchange -> exchange
                         .pathMatchers("/auth/**").permitAll()
-                        .pathMatchers("/actuator/health","/actuator/prometheus").permitAll()
+                        .pathMatchers(
+                                "/actuator/health",
+                                "/actuator/prometheus"
+                        ).permitAll()
+
+                        // Swagger UI and OpenAPI documentation
+                        .pathMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/webjars/**"
+                        ).permitAll()
+
                         .pathMatchers("/admin/**").hasRole("ADMIN")
                         .anyExchange().authenticated()
                 )
+
                 .oauth2ResourceServer(oath2->oath2.jwt(jwt->jwt.jwtAuthenticationConverter(jwtAuthenticationConverterAdapter())))
 
                 .build();

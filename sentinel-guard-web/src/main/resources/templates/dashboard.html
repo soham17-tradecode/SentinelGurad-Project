@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security Overview | Sentinel Guard</title>
+<style>
+:root{--bg:#f5f7f5;--panel:#fff;--line:#e0e6e0;--ink:#252b27;--muted:#68716b;--green:#32664b;--red:#a33c35;--orange:#94611c;--blue:#536b7d}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink)}a{color:inherit;text-decoration:none}
+.layout{display:flex;min-height:100vh}.sidebar{width:240px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);padding:25px 17px}
+.brand{font-size:19px;font-weight:750;padding:0 9px 28px;display:block}.brand-mark{display:inline-grid;place-items:center;background:#e8efe9;color:var(--green);width:29px;height:29px;border-radius:7px;margin-right:7px}
+.nav-label{color:#7b847d;font-size:10px;letter-spacing:1.4px;font-weight:750;margin:20px 10px 10px}.nav-item{display:block;padding:11px 12px;margin:4px 0;border-radius:6px;color:#515c54;font-size:13px}.nav-item.active,.nav-item:hover{background:#edf3ee;color:var(--green)}
+.main{flex:1;min-width:0}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:21px 30px;background:white;border-bottom:1px solid var(--line)}.topbar h2{margin:0;font-size:17px}.muted{color:var(--muted);font-size:13px}
+.logout{padding:9px 13px;border:1px solid #cfd8d0;border-radius:6px;background:white;color:var(--ink);font-weight:650;cursor:pointer}.logout:hover{background:#f4f7f4}
+.content{padding:30px;max-width:1500px;margin:auto}.page-heading{margin-bottom:24px}.page-heading h1{font-size:26px;letter-spacing:-.6px;margin:0 0 7px}.page-heading p{font-size:14px;color:var(--muted);margin:0}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}.card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:20px;box-shadow:0 2px 7px rgba(30,50,35,.02)}
+.metric-label{color:var(--muted);font-size:12px}.metric-value{font-size:28px;font-weight:750;margin:16px 0 7px}.metric-note{font-size:11px;color:var(--muted)}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.orange{color:var(--orange)}
+.section-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}.section-title{margin:0 0 7px;font-size:15px}.section-subtitle{color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:18px}
+.event{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:12px}.event:last-child{border-bottom:0}.event-type{display:block;margin-bottom:5px;font-weight:700}.event-detail{color:var(--muted);line-height:1.5;overflow-wrap:anywhere}.tag{display:inline-block;padding:4px 7px;border-radius:4px;background:#f0f2f0;color:#626b64;font-size:10px;height:fit-content}
+.quick-link{display:block;border:1px solid var(--line);border-radius:7px;padding:15px;margin-top:10px}.quick-link:hover{border-color:#b8c9bc;background:#fbfcfb}.quick-link strong{display:block;margin-bottom:5px;font-size:13px}.quick-link span{color:var(--muted);font-size:11px;line-height:1.5}
+.footer{padding:22px 30px;color:var(--muted);font-size:11px}
+@media(max-width:1000px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.section-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.layout{display:block}.sidebar{width:100%;padding:16px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding-bottom:12px}.nav-label{margin-top:10px}.topbar,.content{padding:19px}.metrics{grid-template-columns:1fr}.page-heading h1{font-size:23px}}
+</style>
+</head>
+<body><div class="layout">
+<aside class="sidebar">
+<a class="brand" th:href="@{/dashboard}"><span class="brand-mark">S</span>Sentinel Guard</a>
+<div class="nav-label">MONITORING</div>
+<a class="nav-item active" th:href="@{/dashboard}">▦ Overview</a>
+<a class="nav-item" th:href="@{/security-events}">◉ Security Events</a>
+<a class="nav-item" th:href="@{/ip-management}">⊘ IP Management</a>
+<a class="nav-item" th:href="@{/audit-history}">☷ Audit History</a>
+<div class="nav-label">OBSERVABILITY</div>
+<a class="nav-item" href="http://localhost:3000/" target="_blank" rel="noopener noreferrer">▤ Grafana ↗</a>
+<a class="nav-item" href="http://localhost:9090/" target="_blank" rel="noopener noreferrer">◷ Prometheus ↗</a>
+</aside>
+<div class="main">
+<header class="topbar"><div><h2>Security Operations Center</h2><div class="muted" style="margin-top:6px">Signed in as <strong th:text="${username}">user</strong> · <span th:text="${role}">ROLE_USER</span></div></div>
+<form th:action="@{/logout}" method="post" style="margin:0"><button class="logout" type="submit">Sign out</button></form></header>
+<main class="content">
+<div class="page-heading"><h1>Security Overview</h1><p>Monitor API traffic, threats, and security activity.</p></div>
+<section class="metrics">
+<article class="card"><div class="metric-label">API Requests Blocked</div><div class="metric-value red">—</div><div class="metric-note">Awaiting live metrics</div></article>
+<article class="card"><div class="metric-label">Security Events</div><div class="metric-value blue">—</div><div class="metric-note">Awaiting event API</div></article>
+<article class="card"><div class="metric-label">Manually Blocked IPs</div><div class="metric-value orange">—</div><div class="metric-note">Awaiting IP status API</div></article>
+<article class="card"><div class="metric-label">Services</div><div class="metric-value green">—</div><div class="metric-note">Live health checks not connected</div></article>
+</section>
+<section class="section-grid">
+<article class="card"><h3 class="section-title">Recent Security Activity</h3><div class="section-subtitle">Live security events will appear here after API integration.</div>
+<div class="event"><div><span class="event-type">Security event feed</span><span class="event-detail">Waiting for the Threat Monitoring API.</span></div><span class="tag">Pending</span></div>
+<div class="event"><div><span class="event-type">IP block status</span><span class="event-detail">Waiting for the gateway IP management API.</span></div><span class="tag">Pending</span></div>
+<div class="event"><div><span class="event-type">Audit history</span><span class="event-detail">Waiting for administrator audit records.</span></div><span class="tag">Pending</span></div>
+</article>
+<article class="card"><h3 class="section-title">Quick Access</h3><div class="section-subtitle">Open monitoring tools configured for this environment.</div>
+<a class="quick-link" href="http://localhost:3000/" target="_blank" rel="noopener noreferrer"><strong>Grafana Dashboard ↗</strong><span>View configured monitoring panels and metrics.</span></a>
+<a class="quick-link" href="http://localhost:9090/" target="_blank" rel="noopener noreferrer"><strong>Prometheus ↗</strong><span>Inspect scraped metrics and query results.</span></a>
+</article>
+</section>
+</main><footer class="footer">Sentinel Guard · API Security and Threat Monitoring</footer>
+</div></div></body></html>

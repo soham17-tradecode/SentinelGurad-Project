@@ -50,6 +50,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       USER_SERVICE_URL: http://user-service:8083
+      APP_BOOTSTRAP_ADMIN_SECRET: ${APP_BOOTSTRAP_ADMIN_SECRET}
 
     volumes:
       - ./auth-service/keys:/app/keys:ro
